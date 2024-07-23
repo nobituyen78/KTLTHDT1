@@ -1,18 +1,21 @@
 package model;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class XeHoi extends SanPham {
+import model.VoXe;
+import model.DongCo;
+import model.SanPham;
+
+public class XeMay extends SanPham {
 	private DongCo dongco;
-	private List<BanhXe> dsbx;
-	public XeHoi(int maSP, String tenSP, int soluong, double giaca, DongCo dongco) {
+	private List<VoXe> dsbx;
+	public XeMay(int maSP, String tenSP, int soluong, double giaca, DongCo dongco) {
 		super(maSP, tenSP, soluong, giaca);
 		this.dongco = dongco;
-		this.dsbx = new ArrayList<BanhXe>();
+		this.dsbx = new ArrayList<VoXe>();
 	}
-	public void addBanhXe (BanhXe bx) throws CloneNotSupportedException {
-		dsbx.add((BanhXe)bx.clone());
+	public void addBanhXe (VoXe bx) throws CloneNotSupportedException {
+		dsbx.add((VoXe)bx.clone());
 	}
 	public DongCo getDongco() {
 		return dongco;
@@ -23,12 +26,12 @@ public class XeHoi extends SanPham {
 	public void setDongco(DongCo dongco) {
 		this.dongco = dongco;
 	}
-	public List<BanhXe> getDsbx() {
+	public List<VoXe> getDsbx() {
 		return dsbx;
 	}
-	public void setDsbx(List<BanhXe> dsbx) throws CloneNotSupportedException {
-		for(BanhXe item: dsbx) {
-			this.dsbx.add((BanhXe)item.clone());
+	public void setDsbx(List<VoXe> dsbx) throws CloneNotSupportedException {
+		for(VoXe item: dsbx) {
+			this.dsbx.add((VoXe)item.clone());
 		}
 	}
 	@Override

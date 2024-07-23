@@ -15,7 +15,7 @@ import model.LapTop;
 import model.LopHoc;
 import model.SanPham;
 import model.SinhVien;
-import model.XeHoi;
+import model.XeMay;
 
 
 public class MainModel {
@@ -23,15 +23,15 @@ public class MainModel {
 
 	    public static void main(String[] args) throws CloneNotSupportedException, SQLException {
 
-	        // Khởi tạo dữ liệu mẫu cho xe hơi, laptop và sinh viên
-	        List<XeHoi> cars = new ArrayList<>();
-	        cars.add(new XeHoi(1, "H2R", 100, 1250000, new DongCo("Dong co xang", 1000)));
-	        cars.add(new XeHoi(2, "DUCATI", 1000, 3890000, new DongCo("Dong co xang", 1000)));
-	        cars.add(new XeHoi(3, "YUSASI", 100, 6500000, new DongCo("Dong co xang", 1000)));
-	        cars.add(new XeHoi(4, "ZX10R", 100, 6180000, new DongCo("Dong co xang", 1000)));
-	        cars.add(new XeHoi(5, "S1000R", 100, 1013950, new DongCo("Dong co dien", 1000)));
-	        cars.add(new XeHoi(6, "CBR1000RR", 100, 2620000, new DongCo("Dong co dien", 1000)));
-	        cars.add(new XeHoi(7, "R1", 100, 8500000, new DongCo("Dong co dien", 1000)));
+	    	// Khởi tạo dữ liệu mẫu cho xe hơi, laptop và sinh viên
+	        List<XeMay> cars = new ArrayList<>();
+	        cars.add(new XeMay(1, "H2R", 100, 1250000, new DongCo("Dong co xang", 1000)));
+	        cars.add(new XeMay(2, "DUCATI", 1000, 3890000, new DongCo("Dong co xang", 1000)));
+	        cars.add(new XeMay(3, "YUSASI", 100, 6500000, new DongCo("Dong co xang", 1000)));
+	        cars.add(new XeMay(4, "ZX10R", 100, 6180000, new DongCo("Dong co xang", 1000)));
+	        cars.add(new XeMay(5, "S1000R", 100, 1013950, new DongCo("Dong co dien", 1000)));
+	        cars.add(new XeMay(6, "CBR1000RR", 100, 2620000, new DongCo("Dong co dien", 1000)));
+	        cars.add(new XeMay(7, "R1", 100, 8500000, new DongCo("Dong co dien", 1000)));
 
 	        List<LapTop> lt = new ArrayList<>();
 	        lt.add(new LapTop(1, "HP PAVILION 15", 123, 15000, 4, "16GB DDR4"));
@@ -49,10 +49,10 @@ public class MainModel {
 	        dssv.add(new SinhVien("Trần Công Quý ", "0987456321", new LopHoc("KHTN")));
 	        dssv.add(new SinhVien("Hoàng Văn Thuận ", "0123458769", new LopHoc("KTMT")));
 	        List<SanPham> sanPhams1 = new ArrayList<>();
-	        sanPhams1.add(new XeHoi(1, "Toyota", 100, 1250000, new DongCo("Dong co xang", 147)));
+	        sanPhams1.add(new XeMay(1, "Toyota", 100, 1250000, new DongCo("Dong co xang", 147)));
 	        
 	        List<SanPham> sanPhams2 = new ArrayList<>();
-	        sanPhams2.add(new LapTop(1, "Dell", 123, 15000, 4, "16GB DDR4"));
+	        sanPhams2.add(new LapTop(1, "DEll", 123, 15000, 4, "16GB DDR4"));
 	        
 	   
 
@@ -96,26 +96,67 @@ public class MainModel {
 	                case 11:
 	                    xoasinhvien(dssv, sc);
 	                    break;
-	                case 12:
-	                    System.out.print("\nNhập tên sinh viên để tạo hóa đơn: ");
-	                    String tenSinhVien = sc.nextLine().trim();
-	                    SinhVien sv = dssv.stream()
-	                            .filter(s -> s.getHoten().equalsIgnoreCase(tenSinhVien))
-	                            .findFirst()
-	                            .orElse(null);
-	                    if (sv != null) {
-	                        List<SanPham> sanPhams = new ArrayList<>();
-	                        sanPhams.add(new XeHoi(1, "Toyota", 100, 1250000, new DongCo("Dong co xang", 147)));
-	                        sanPhams.add(new LapTop(1, "Dell", 123, 15000, 4, "16GB DDR4"));
-	                        taoHoaDon(sv, sanPhams);
-	                    } else {
-	                        System.out.println("Sinh viên không tồn tại.");
-	                    }
-	                    break;
+
+case 12:
+    System.out.print("\nNhập tên sinh viên để tạo hóa đơn: ");
+    String tenSinhVien = sc.nextLine().trim();
+    SinhVien sv = dssv.stream()
+            .filter(s -> s.getHoten().equalsIgnoreCase(tenSinhVien))
+            .findFirst()
+            .orElse(null);
+
+    if (sv != null) {
+        List<SanPham> sanPhamsMua = new ArrayList<>();
+        double tongTien = 0;
+
+        // Hiển thị danh sách sản phẩm
+        System.out.println("\nDanh sách xe máy:");
+        hienthidanhsachbanhxe(cars);
+        System.out.println("\nDanh sách laptop:");
+        hienthidanhsachlaptop(lt);
+
+        while (true) {
+            System.out.print("Nhập tên sản phẩm muốn mua (hoặc '0' để kết thúc): ");
+            String tenSP = sc.nextLine().trim();
+
+            if (tenSP.equals("0")) {
+                break;
+            }
+
+            SanPham sp = timSanPhamTheoSanpham(tenSP, cars, lt);
+            if (sp != null) {
+                System.out.print("Nhập số lượng: ");
+                int soLuong = sc.nextInt();
+                sc.nextLine(); // Consume newline
+
+                SanPham sanPhamMua = (SanPham) sp.clone();
+                sanPhamMua.setSoluong(soLuong);
+                sanPhamsMua.add(sanPhamMua);
+                tongTien += sanPhamMua.getGiaca() * soLuong;
+            } else {
+                System.out.println("Không tìm thấy sản phẩm có tên '" + tenSP + "'");
+            }
+        }
+
+        System.out.println("\nTổng tiền: " + tongTien);
+        System.out.print("Xác nhận tạo hóa đơn (y/n)? ");
+        String xacNhan = sc.nextLine().trim().toLowerCase();
+        if (xacNhan.equals("y")) {
+            taoHoaDon(sv, sanPhamsMua); // Gọi hàm taoHoaDon để tạo và hiển thị hóa đơn
+        } else {
+            System.out.println("Hủy tạo hóa đơn.");
+        }
+    } else {
+        System.out.println("Sinh viên không tồn tại.");
+    }
+    break;
+
+// ... (các case khác)
 	                case 0:
 	                    System.out.println("Bạn Đã Thoát chương trình.");
 	                    System.out.println("Chúc Bạn Có 1 Ngày Tốt Đẹp.");
-	                    System.out.println("Hẹn Gặp Lại Bạn Trong Một Ngày Đẹp Trời .");
+	                    System.out.println("Hẹn Gặp Lại Bạn Trong Lần Tới.");
+	                    System.out.println("Bạn đừng quên nếu thấy sản phảm tốt thì cho nhà NOBI đánh giá 5★.");
 	                    break;
 	                default:
 	                    System.out.println("Lựa chọn không hợp lệ, vui lòng chọn lại.");
@@ -125,65 +166,79 @@ public class MainModel {
 	        sc.close();
 	    }
 
-    public static void showMenu() {
-        System.out.println("\n********************************************");
-        System.out.println("* |               MENU                      | *");
-        System.out.println("********************************************");
-        System.out.println("* |     Quản Lý Tài Sản Của Cửa Hàng NOBI   | *");
-        System.out.println("********************************************");
-        System.out.println("* | 1. Hiển thị danh sách xe hơi            | *");
-        System.out.println("* | 2. Hiển thị danh sách laptop            | *");
-        System.out.println("* | 3. Xắp xếp laptop theo giá              | *");
-        System.out.println("* | 4. Tìm kiếm laptop                      | *");
-        System.out.println("* | 5. Xóa                                  | *");
-        System.out.println("* | 6. Tìm kiếm xe                          | *");
-        System.out.println("* | 7. Xắp xếp xe theo giá                  | *");
-        System.out.println("* | 8. Xóa xe                               | *");
-        System.out.println("* | 9. Kết nối máy chủ CSDL                 | *");
-        System.out.println("* | 10. Hiển thị danh sách sinh viên        | *");
-        System.out.println("* | 11. Xóa sinh viên                       | *");
-        System.out.println("* | 12. Tạo hóa đơn                         | *"); 
-        System.out.println("* | 0. Thoát                                | *");
-        System.out.println("********************************************");
-        System.out.print("Vui lòng chọn (0-12): ");
-    }
+	    private static SanPham timSanPhamTheoSanpham(String tenSP, List<XeMay> cars, List<LapTop> lt) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public static void showMenu() {
+	        System.out.println("\n\033[1m" + "★★★★★ QUẢN LÝ TÀI SẢN CỬA HÀNG NHÀ NOBI ★★★★★" + "\033[0m");
+	        System.out.println(" ");
+	        System.out.println("         ╔═══════════════════════════════════════╗");
+	        System.out.println("         ║              MENU                     ║");
+	        System.out.println("         ╠═══════════════════════════════════════╣");
+	        System.out.println("         ║ 🚗 1. Hiển thị danh sách xe máy        ║");
+	        System.out.println("         ║ 💻 2. Hiển thị danh sách laptop        ║");
+	        System.out.println("         ║ 💰 3. Xắp xếp laptop theo giá          ║");
+	        System.out.println("         ║ 🔍 4. Tìm kiếm laptop                  ║");
+	        System.out.println("         ║ 🗑️ 5. Xóa laptop                       ║");
+	        System.out.println("         ║ 🚗 6. Tìm kiếm xe                      ║");
+	        System.out.println("         ║ 💰 7. Xắp xếp xe theo giá              ║");
+	        System.out.println("         ║ 🗑️ 8. Xóa xe                           ║");
+	        System.out.println("         ║ ☁️ 9. Kết nối máy chủ CSDL             ║");
+	        System.out.println("         ║ 🧑‍🎓 10. Hiển thị danh sách sinh viên    ║");
+	        System.out.println("         ║ 🗑️ 11. Xóa sinh viên                   ║");
+	        System.out.println("         ║ 🧾 12. Tạo hóa đơn                     ║");
+	        System.out.println("         ║ 🚪 0. Thoát                            ║");
+	        System.out.println("         ╚═══════════════════════════════════════╝");
+	        System.out.println(" ");
+	        System.out.println("\033[1m" + "★★★★★ Vui lòng chọn (0-12): " + "\033[0m");
+	    }
     
-    public static void taoHoaDon(SinhVien sinhVien, List<SanPham> sanPhams) {
-        // Tạo sao chép danh sách sản phẩm nếu cần
-        List<SanPham> saoChepSanPhams = new ArrayList<>();
-        for (SanPham sp : sanPhams) {
-            try {
-                saoChepSanPhams.add((SanPham) sp.clone());
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        }
+		// Hàm taoHoaDon (đã được chỉnh sửa)
+		public static void taoHoaDon(SinhVien sinhVien, List<SanPham> sanPhams) {
+		    // Tạo bản sao danh sách sản phẩm
+		    List<SanPham> saoChepSanPhams = new ArrayList<>();
+		    for (SanPham sp : sanPhams) {
+		        try {
+		            saoChepSanPhams.add((SanPham) sp.clone());
+		        } catch (CloneNotSupportedException e) {
+		            e.printStackTrace();
+		        }
+		    }
 
-        int soHD = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-        HoaDon hoaDon = new HoaDon(soHD);
+		    int soHD = (int) (System.currentTimeMillis() % Integer.MAX_VALUE); // Mã hóa đơn ngẫu nhiên
+		    HoaDon hoaDon = new HoaDon(soHD);
 
-        // Hiển thị hóa đơn
-        System.out.println("\nHóa đơn của sinh viên " + sinhVien.getHoten() + ":");
-        System.out.println("Đả Mua Các Sản Phẩm");
-        System.out.println("Số hóa đơn: " + hoaDon.getSoHD());
-        System.out.println("|----------------------------------------------------------|");
-        System.out.printf("| %-3s | %-15s | %-8s | %-10s |\n", "ID", "Tên", "Số Lượng", "Giá Cả");
-        System.out.println("|----------------------------------------------------------|");   
+		    // Hiển thị hóa đơn với định dạng đẹp hơn
+		    System.out.println("\n\033[1m" + "══════════════════════ HÓA ĐƠN ═════════════════════════" + "\033[0m");
+		    System.out.println("Số hóa đơn: " + hoaDon.getSoHD());
+		    System.out.println("Tên khách hàng: " + sinhVien.getHoten());
+		    System.out.println("Lớp: " + sinhVien.getLop().getTenLop());
+		    System.out.println("\033[1m" + "---------------------------------------------------------" + "\033[0m");
+		    System.out.printf("%-5s %-20s %-10s %-10s\n", "STT", "Tên sản phẩm", "Số lượng", "Giá");
+		    System.out.println("\033[1m" + "---------------------------------------------------------" + "\033[0m");
+
+		    double tongTien = 0;
+		    int stt = 1;
+		    for (SanPham sp : hoaDon.getDssp()) {
+		        System.out.printf("%-5d %-20s %-10d %-10.2f\n", stt++, sp.getTenSP(), sp.getSoluong(), sp.getGiaca());
+		        tongTien += sp.getGiaca() * sp.getSoluong();
+		    }
+
+		    System.out.println("\033[1m" + "---------------------------------------------------------" + "\033[0m");
+		    System.out.printf("Tổng tiền: \033[1m%-10.2f\033[0m\n", tongTien); 
+		    System.out.println("\033[1m" + "═════════════════════════════════════════════════════════" + "\033[0m");
+		}
 
 
-        for (SanPham sp : hoaDon.getDssp()) {
-            System.out.printf("| %-3d | %-15s | %-8d | %-10.2f |\n", sp.getMaSP(), sp.getTenSP(), sp.getSoluong(), sp.getGiaca());
-        }
 
-        System.out.println("|----------------------------------------------------------|");
-    }
-
-    public static void hienthidanhsachbanhxe(List<XeHoi> cars) {
-        System.out.println("\nDanh sách bánh xe của các xe hơi:");
+    public static void hienthidanhsachbanhxe(List<XeMay> cars) {
+        System.out.println("\nDanh sách bánh xe của các xe máy:");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
-        System.out.printf("| %-3s | %-15s | %-8s | %-12s | %-30s | %-100s |\n", "ID", "Tên", "Số Lượng", "Giá Cả", "Động Cơ", "Bánh Xe");
+        System.out.printf("| %-3s | %-15s | %-8s | %-12s | %-30s | %-100s |\n", "ID", "Tên", "Số Lượng", "Giá Cả", "Động Cơ", "Vỏ Xe");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
-        for (XeHoi car : cars) {
+        for (XeMay car : cars) {
             System.out.printf("| %-3d | %-15s | %-8d | %-12.3f | %-30s | %-100s |\n",
                     car.getMaSP(), car.getTenSP(), car.getSoluong(), car.getGiaca(), car.getDongco(), car.getDsbx());
         }
@@ -266,15 +321,15 @@ public class MainModel {
             hienthidanhsachlaptop(lt);
         }
     }
-    public static void timkiemXe(List<XeHoi> cars, Scanner sc) {
+    public static void timkiemXe(List<XeMay> cars, Scanner sc) {
         System.out.print("\nNhập tên xe hơi cần tìm: ");
         String name = sc.nextLine().trim();
 
         // Sắp xếp danh sách theo tên nếu chưa được sắp xếp
-        cars.sort(Comparator.comparing(XeHoi::getTenSP));
+        cars.sort(Comparator.comparing(XeMay::getTenSP));
 
         // Thực hiện tìm kiếm nhị phân
-        int vitri = Collections.binarySearch(cars, new XeHoi(0, name, 0, 0, null), Comparator.comparing(XeHoi::getTenSP));
+        int vitri = Collections.binarySearch(cars, new XeMay(0, name, 0, 0, null), Comparator.comparing(XeMay::getTenSP));
 
         // Kiểm tra kết quả tìm kiếm
         if (vitri >= 0) {
@@ -291,46 +346,46 @@ public class MainModel {
             }
         }
     }
-    public static void xapsepxetheogia(List<XeHoi> cars) {
+    public static void xapsepxetheogia(List<XeMay> cars) {
         // Sắp xếp danh sách xe hơi theo giá cả tăng dần
-        cars.sort(Comparator.comparingDouble(XeHoi::getGiaca));
+        cars.sort(Comparator.comparingDouble(XeMay::getGiaca));
 
         // Hiển thị danh sách sau khi sắp xếp
         System.out.println("\nDanh sách xe hơi được sắp xếp theo giá cả:");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
         System.out.printf("| %-3s | %-15s | %-8s | %-12s | %-30s | %-100s |\n", "ID", "Tên", "Số Lượng", "Giá Cả", "Động Cơ", "Bánh Xe");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
-        for (XeHoi car : cars) {
+        for (XeMay car : cars) {
             System.out.printf("| %-3d | %-15s | %-8d | %-12.3f | %-30s | %-100s |\n",
                     car.getMaSP(), car.getTenSP(), car.getSoluong(), car.getGiaca(), car.getDongco(), car.getDsbx());
         }
         System.out.println("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
     }
-    public static void xoaXe(List<XeHoi> cars, Scanner sc) {
-        System.out.print("\nNhập tên xe hơi cần xóa: ");
+    public static void xoaXe(List<XeMay> cars, Scanner sc) {
+        System.out.print("\nNhập tên xe máy cần xóa: ");
         String name = sc.nextLine().trim();
 
-        Iterator<XeHoi> iterator = cars.iterator();
+        Iterator<XeMay> iterator = cars.iterator();
         boolean found = false;
         while (iterator.hasNext()) {
-            XeHoi car = iterator.next();
+            XeMay car = iterator.next();
             if (car.getTenSP().trim().equalsIgnoreCase(name)) {
                 iterator.remove();
                 found = true;
-                System.out.println("Xe hơi '" + name + "' đã được xóa.");
+                System.out.println("Xe máy '" + name + "' đã được xóa.");
             }
         }
         if (!found) {
-            System.out.println("Không tìm thấy xe hơi '" + name + "'.");
+            System.out.println("Không tìm thấy xe xe máy  '" + name + "'.");
         } else {
-            System.out.println("\nDanh sách xe hơi sau khi xóa:");
+            System.out.println("\nDanh sách xe máy sau khi xóa:");
             hienthidanhsachbanhxe(cars);
         }
     }
     
     public static void ketnoiMayChuCSDL() throws SQLException {
     	
-			Object ktlthdt;
+			Object main;
 			Connection kncsdl = model.DBConnection.getInstance().getConnection();
 			if(kncsdl != null) {
 				System.out.println( "Ket Noi Toi May Chu CSDL, Thanh Cong.");

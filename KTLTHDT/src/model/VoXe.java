@@ -1,9 +1,9 @@
 package model;
 
-public class BanhXe implements Cloneable {
+public class VoXe implements Cloneable {
 	private String loaiBanhXe;
 	private double bankinh;
-	public BanhXe(String loaiBanhXe, double bankinh) {
+	public VoXe(String loaiBanhXe, double bankinh) {
 		super();
 		this.loaiBanhXe = loaiBanhXe;
 		this.bankinh = bankinh;
@@ -25,7 +25,7 @@ public class BanhXe implements Cloneable {
 		return "BanhXe [loaiBanhXe=" + loaiBanhXe + ", bankinh=" + bankinh + "]";
 	}
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
 		return super.clone();
 	}
