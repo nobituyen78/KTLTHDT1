@@ -97,59 +97,7 @@ public class MainModel {
 	                    xoasinhvien(dssv, sc);
 	                    break;
 
-case 12:
-    System.out.print("\nNhập tên sinh viên để tạo hóa đơn: ");
-    String tenSinhVien = sc.nextLine().trim();
-    SinhVien sv = dssv.stream()
-            .filter(s -> s.getHoten().equalsIgnoreCase(tenSinhVien))
-            .findFirst()
-            .orElse(null);
 
-    if (sv != null) {
-        List<SanPham> sanPhamsMua = new ArrayList<>();
-        double tongTien = 0;
-
-        // Hiển thị danh sách sản phẩm
-        System.out.println("\nDanh sách xe máy:");
-        hienthidanhsachbanhxe(cars);
-        System.out.println("\nDanh sách laptop:");
-        hienthidanhsachlaptop(lt);
-
-        while (true) {
-            System.out.print("Nhập tên sản phẩm muốn mua (hoặc '0' để kết thúc): ");
-            String tenSP = sc.nextLine().trim();
-
-            if (tenSP.equals("0")) {
-                break;
-            }
-
-            SanPham sp = timSanPhamTheoSanpham(tenSP, cars, lt);
-            if (sp != null) {
-                System.out.print("Nhập số lượng: ");
-                int soLuong = sc.nextInt();
-                sc.nextLine(); // Consume newline
-
-                SanPham sanPhamMua = (SanPham) sp.clone();
-                sanPhamMua.setSoluong(soLuong);
-                sanPhamsMua.add(sanPhamMua);
-                tongTien += sanPhamMua.getGiaca() * soLuong;
-            } else {
-                System.out.println("Không tìm thấy sản phẩm có tên '" + tenSP + "'");
-            }
-        }
-
-        System.out.println("\nTổng tiền: " + tongTien);
-        System.out.print("Xác nhận tạo hóa đơn (y/n)? ");
-        String xacNhan = sc.nextLine().trim().toLowerCase();
-        if (xacNhan.equals("y")) {
-            taoHoaDon(sv, sanPhamsMua); // Gọi hàm taoHoaDon để tạo và hiển thị hóa đơn
-        } else {
-            System.out.println("Hủy tạo hóa đơn.");
-        }
-    } else {
-        System.out.println("Sinh viên không tồn tại.");
-    }
-    break;
 
 // ... (các case khác)
 	                case 0:
@@ -188,7 +136,6 @@ case 12:
 	        System.out.println("         ║ ☁️ 9. Kết nối máy chủ CSDL             ║");
 	        System.out.println("         ║ 🧑‍🎓 10. Hiển thị danh sách sinh viên    ║");
 	        System.out.println("         ║ 🗑️ 11. Xóa sinh viên                   ║");
-	        System.out.println("         ║ 🧾 12. Tạo hóa đơn                     ║");
 	        System.out.println("         ║ 🚪 0. Thoát                            ║");
 	        System.out.println("         ╚═══════════════════════════════════════╝");
 	        System.out.println(" ");
@@ -208,7 +155,7 @@ case 12:
 		    }
 
 		    int soHD = (int) (System.currentTimeMillis() % Integer.MAX_VALUE); // Mã hóa đơn ngẫu nhiên
-		    HoaDon hoaDon = new HoaDon(soHD);
+		    HoaDon hoaDon = new HoaDon();
 
 		    // Hiển thị hóa đơn với định dạng đẹp hơn
 		    System.out.println("\n\033[1m" + "══════════════════════ HÓA ĐƠN ═════════════════════════" + "\033[0m");

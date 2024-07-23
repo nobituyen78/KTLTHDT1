@@ -3,26 +3,26 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class HoaDon {
+    private SanPham sanPham;
+    private int soLuong;
+	private Object dssp;
 	private int soHD;
-	private List<SanPham> dssp;
-	public HoaDon(int doHD) {
-		super();
-		this.soHD = soHD;
-		this.dssp = new ArrayList<SanPham>();
-	}
+
+    // Constructor, getters, setters
+
+	
 	public void addSanPham(SanPham sp) throws CloneNotSupportedException {
-		this.dssp.add((SanPham)sp.clone());
+		((List<SanPham>) this.dssp).add((SanPham)sp.clone());
 	}
 	public int getSoHD() {
-		return soHD;
+		return getSoHD();
 	}
 	public void setSoHD(int soHD) {
 		this.soHD = soHD;
 	}
 	public List<SanPham> getDssp() {
-		return dssp;
+		return (List<SanPham>) dssp;
 	}
 	public void setDssp(List<SanPham> dssp) {
 		this.dssp = dssp;
